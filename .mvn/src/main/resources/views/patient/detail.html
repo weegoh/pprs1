@@ -1,0 +1,227 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="_header :: header"></head>
+<body>
+    <div th:replace="_menu :: menu (${User})"></div>
+    <div class="container center">
+        <div class="row">
+          <div class="col-md-6 offset-md-3">
+              <h1 th:text="${PageTitle}">Page Title</h1>
+              <div class="alert alert-success" th:text="${'Patient ID: ' + patient.Id}">Patient ID:</div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+              <form action="/patient" method="GET" class="form-inline justify-content-center" >
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Find Patient by Name..." th:value="${patientName}"
+                        name="patientName">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-primary" type="submit"><i class="fa fa-search"></i></button>
+                    </div>
+                </div>
+              </form>
+          </div>
+          
+        </div>
+        </div>
+      </div>
+      
+      <div class="container">
+        <div class="row">
+          <div class="col">
+            <h3>Patient Details <span class="badge badge-success" th:text="${IsNew} ?: ''"></span></h3>
+          </div>
+        </div>
+        <form method="POST" action="/patient/new" th:action="${IsNew} ? @{'/patient/new'} : @{'/patient/update'}" th:object="${patient}">
+          <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+          <input type="hidden" name="Id" th:value="${Id}" th:field="*{Id}"/>
+            <div class="row">
+                <div class="col">
+                  <label class="control-label" for="firstName">First Name</label>
+                  <div class="input-group mb-3">
+                    <div class="input-group-prepend d-none d-lg-flex">
+                      <span class="input-group-text" id="basic-addon1"><i class="fa fa-user" aria-hidden="true"></i></span>
+                    </div>
+                    <input type="text" class="form-control" placeholder="First Name" aria-label="First Name" aria-describedby="basic-addon1" th:value="${FirstName}" th:field="*{FirstName}"/>
+                  </div>
+                  <p class="text-danger" th:if="${#fields.hasErrors('FirstName')}" th:errors="*{FirstName}">First Name Error</p>
+                </div>
+                <div class="col">
+                  <label class="control-label" for="lastName">Last Name</label>
+                  <div class="input-group mb-3">
+                    <div class="input-group-prepend d-none d-lg-flex">
+                      <span class="input-group-text" id="basic-addon1"><i class="fa fa-user" aria-hidden="true"></i></span>
+                    </div>
+                    <input type="text" class="form-control" placeholder="Last Name" aria-label="Last Name" aria-describedby="basic-addon1" th:value="${LastName}" th:field="*{LastName}"\>
+                  </div>
+                  <p class="text-danger" th:if="${#fields.hasErrors('LastName')}" th:errors="*{LastName}">Last Name Error</p>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                    <label class="control-label" for="dob">Date of Birth</label>
+                    <div class="input-group mb-3">
+                      <div class="input-group-prepend d-none d-lg-flex">
+                        <span class="input-group-text" id="basic-addon1"><i class="fas fa-calendar-alt" aria-hidden="true"></i></span>
+                      </div>
+                      <input type="text" class="form-control" placeholder="dd/mm/yyyy" aria-label="Date of Birth" aria-describedby="basic-addon1" th:value="${DateOfBirth}" th:field="*{DateOfBirth}">
+                    </div>
+                    <p class="text-danger" th:if="${#fields.hasErrors('DateOfBirth')}" th:errors="*{DateOfBirth}">DateOfBirth Error</p>
+                </div>
+                <div class="col">
+                    <label class="control-label" for="dob">Gender</label>
+                    <div class="input-group mb-3" th:with="genderList = ${ {'Select one...', 'Male', 'Female', 'Other'} }">
+                      <div class="input-group-prepend d-none d-lg-flex">
+                        <span class="input-group-text" id="basic-addon1"><i class="fa fa-genderless" aria-hidden="true"></i></span>
+                      </div>
+                      <select name="gender"id="gender" class="form-control" th:field="*{Gender}">
+                        <option th:each="i : ${genderList}" th:value="${i}" th:text="${i}" th:selected="${i==Gender}"></option>
+                      </select>
+                    </div>
+                    <p class="text-danger" th:if="${#fields.hasErrors('Gender')}" th:errors="*{Gender}">Gender Error</p>
+                </div>
+                <div class="col">
+                    <label class="control-label" for="contact">Contact</label>
+                    <div class="input-group mb-3">
+                      <div class="input-group-prepend d-none d-lg-flex">
+                        <span class="input-group-text" id="basic-addon1"><i class="fa fa-phone" aria-hidden="true"></i></span>
+                      </div>
+                      <input class="form-control" type="tel" placeholder="1-(555)-555-5555" id="contact" th:value="${Contact}" th:field="*{Contact}">
+                    </div>
+                    <p class="text-danger" th:if="${#fields.hasErrors('Contact')}" th:errors="*{Contact}">Contact Error</p>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-2">
+                  <label class="control-label" for="unitnum">Unit #</label>
+                    <div class="input-group mb-3">
+                      <div class="input-group-prepend d-none d-lg-flex">
+                          <span class="input-group-text" id="basic-addon1"><i class="fa fa-hashtag" aria-hidden="true"></i></span>
+                      </div>
+                      <input class="form-control" type="number" id="unitnum" th:value="${UnitNum}" th:field="*{UnitNum}">
+                    </div>
+                    <p class="text-danger" th:if="${#fields.hasErrors('UnitNum')}" th:errors="*{UnitNum}">Unit Number Error</p>
+                </div>
+                <div class="col-2">
+                  <label class="control-label" for="streetnum">Street #</label>
+                    <div class="input-group mb-3">
+                      <div class="input-group-prepend d-none d-lg-flex">
+                        <span class="input-group-text" id="basic-addon1"><i class="fa fa-hashtag" aria-hidden="true"></i></span>
+                      </div>
+                    <input class="form-control" type="number" id="streetnum" th:value="${StreetNum}" th:field="*{StreetNum}">
+                  </div>
+                  <p class="text-danger" th:if="${#fields.hasErrors('StreetNum')}" th:errors="*{StreetNum}">Street Number Error</p>
+                </div>
+                <div class="col">
+                    <label class="control-label" for="street">Street</label>
+                      <div class="input-group mb-3">
+                        <div class="input-group-prepend d-none d-lg-flex">
+                          <span class="input-group-text" id="basic-addon1"><i class="fa fa-road" aria-hidden="true"></i></span>
+                        </div>
+                      <input class="form-control" type="text" id="street" placeholder="Somewhere Ave." th:value="${Street}" th:field="*{Street}">
+                    </div>
+                    <p class="text-danger" th:if="${#fields.hasErrors('Street')}" th:errors="*{Street}">Street Error</p>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-4">
+                  <label class="control-label" for="suburb">Suburb</label>
+                    <div class="input-group mb-3">
+                      <div class="input-group-prepend d-none d-lg-flex">
+                        <span class="input-group-text" id="basic-addon1"><i class="fa fa-city" aria-hidden="true"></i></span>
+                      </div>
+                      <input class="form-control" type="text" id="suburb" placeholder="Suburb" th:value="${Suburb}" th:field="*{Suburb}">
+                    </div>
+                    <p class="text-danger" th:if="${#fields.hasErrors('Suburb')}" th:errors="*{Suburb}">Suburb Error</p>
+                </div>
+                <div class="col-2">
+                    <label class="control-label" for="state">State</label>
+                      <div class="input-group mb-3">
+                        <div class="input-group-prepend d-none d-lg-flex">
+                          <span class="input-group-text" id="basic-addon1"><i class="fa fa-map-signs" aria-hidden="true"></i></span>
+                        </div>
+                      <input class="form-control" type="text" id="state" placeholder="State" th:value="${State}" th:field="*{State}">
+                    </div>
+                    <p class="text-danger" th:if="${#fields.hasErrors('State')}" th:errors="*{State}">State Error</p>
+                </div>
+                <div class="col-2">
+                    <label class="control-label" for="postcode">Postcode/Zip</label>
+                      <div class="input-group mb-3">
+                        <div class="input-group-prepend d-none d-lg-flex">
+                          <span class="input-group-text" id="basic-addon1"><i class="fa fa-envelope" aria-hidden="true"></i></span>
+                        </div>
+                      <input class="form-control" type="text" id="postcode" placeholder="5555" th:value="${Postcode}" th:field="*{Postcode}">
+                    </div>
+                    <p class="text-danger" th:if="${#fields.hasErrors('Postcode')}" th:errors="*{Postcode}">Postcode Error</p>
+                </div>
+                <div class="col-4">
+                    <label class="control-label" for="country">Country</label>
+                      <div class="input-group mb-3">
+                        <div class="input-group-prepend d-none d-lg-flex">
+                          <span class="input-group-text" id="basic-addon1"><i class="fa fa-flag" aria-hidden="true"></i></span>
+                        </div>
+                      <input class="form-control" type="text" id="country" placeholder="Country" th:value="${Country}" th:field="*{Country}">
+                    </div>
+                    <p class="text-danger" th:if="${#fields.hasErrors('Country')}" th:errors="*{Country}">Country Error</p>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col text-left" th:if="!${IsNew}"><a target="_blank"
+                  th:href="'/report/patient/' + ${patient.Id}" class="btn btn-outline-primary btn-sm" tabindex="-1" role="button" aria-disabled="true" title="View patient XML report">Prescription Report</a></div>
+                <div class="col text-right">
+                  <button class="btn btn-primary" type="submit" title="Save patient details">Save</button>
+                </div>
+              </div>
+            </form>
+              <div class="row mt-lg-3" th:if="!${IsNew}">
+                <div class="col mb-3">
+                  <table class="table table-sm">
+                    <thead class="thead-light">
+                      <tr>
+                        <th scope="col">Drug Allergies</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        <th:block th:each="allergicDrug : ${AllergicDrugs}">
+                            <tr><td th:text="${allergicDrug.id + ' ' + allergicDrug.Name}"></td></tr>
+                        </th:block>
+                        <span th:if="${AllergicDrugs.isEmpty()}"> 
+                          <tr><td>No Allergic Drugs Entered</td></tr> 
+                        </span>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="col mb-3">
+                    <table class="table table-sm">
+                        <thead class="thead-light">
+                          <tr>
+                            <th scope="col">Current Drugs</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <th:block th:each="currentDrug : ${CurrentDrugs}">
+                            <tr><td th:text="${currentDrug.id + ' ' + currentDrug.Name}"></td></tr>
+                          </th:block>
+                          <span th:if="${CurrentDrugs.isEmpty()}"> 
+                            <tr><td>No Current Drugs Entered</td></tr> 
+                          </span>
+                        </tbody>
+                      </table>
+                </div>
+                <div class="col mb-3">
+                      <a href="#" th:href="@{'/patient/'+ ${patient.Id} +'/drug'}" class="btn btn-outline-primary btn-sm" tabindex="-1" role="button" aria-disabled="true" th:disabled="${IsNew} ?:disabled" title="Edit current and allergic drugs">Edit Drugs</a>
+                </div>
+                <div class="row">
+                  <div class="col" th:if="!${IsNew}">
+                    <a th:href="@{'/patient/' + ${patient.Id} + '/searchPrescribingDrug'}" class="btn btn-primary" role="button" title="Prescribe and analyse a new drug" th:disabled="${IsNew} ?:disabled">Prescribe Drug</a>
+                  </div>
+                </div>
+                
+              </div>
+              
+      
+      </div>
+</body>
+
+</html>

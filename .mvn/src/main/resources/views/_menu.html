@@ -1,0 +1,24 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<body>
+    <div
+        th:fragment="menu (User)"
+        class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm">
+        <h5 class="my-0 mr-md-auto font-weight-normal">
+            <a href="/" title="Home"><img src="/assets/images/PPRS_Logo.svg" style="height: 1.8rem;" /></a>
+        </h5>
+        <nav class="my-2 my-md-0 mr-md-3">
+            <a class="p-2 text-dark" href="/patient" sec:authorize-url="/patient">Patients</a>
+            <a class="p-2 text-dark" href="/report" sec:authorize-url="/report">Reports</a>
+            <a class="p-2 text-dark" href="/admin/user" sec:authorize-url="/admin/user">User Administration</a>
+        </nav>
+
+        <a href="/logout" title="Sign out" sec:authorize="isAuthenticated()">
+            <span th:text="${User.fullname}"></span>&nbsp;Sign out
+        </a>
+        <a href="/login" title="Sign in" sec:authorize="not isAuthenticated()">Sign in</a>
+    </div>
+</body>
+
+</html>

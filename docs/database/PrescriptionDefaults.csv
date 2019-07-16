@@ -1,0 +1,9 @@
+drugBankID,medQty,medUnit,dosage,dosageUnit,medFreq,duration,medQualifier,unitPerDosage
+DB01060,30,capsule,250,mg,3 times daily,5 days,,2
+DB00316,10,tablet,500,mg,3 times daily,,When needed,
+DB00916,15,tablet,200,mg,3 times daily,5 days,,1
+DB00199,30,tablet,250,mg,3 times daily,5 days,,1
+DB00784,20,capsule,250,mg,3 times daily,,When needed,
+DB01211,5,tablet,500,mg,Once daily,5 days,,1
+DB13131,10,tablet,10,mg,3 times daily,,When needed,
+DB01050,20,tablet,200,mg,3 times daily,,When needed,

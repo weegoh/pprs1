@@ -1,0 +1,37 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head th:replace="_header :: header"></head>
+
+<body>
+    <div th:replace="_menu :: menu (${User})"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Quick Links</h4>
+                        <p class="card-text">
+                            <dl>
+                                <th:block sec:authorize-url="/patient">
+                                    <dt><a href="/patient">Patients</a></dt>
+                                    <dd>Search for patients, change their details, and prescribe drugs.</dd>
+                                </th:block>
+                                <th:block sec:authorize-url="/report">
+                                    <dt><a href="/report">Reports</a></dt>
+                                    <dd>Generate standard reports.</dd>
+                                </th:block>
+                                <th:block sec:authorize-url="/admin">
+                                    <dt><a href="/admin/user">User Administration</a></dt>
+                                    <dd>Register users, change their details and roles.</dd>
+                                </th:block>
+                            </dl>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

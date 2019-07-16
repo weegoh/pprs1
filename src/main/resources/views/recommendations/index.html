@@ -1,0 +1,403 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head th:replace="_header :: header"></head>
+
+<body>
+  <style>
+    .detail-item > td, .detail-item table, .detail-item p{
+      padding:0;
+      margin:0;
+    }
+
+    .detail-item p{
+      text-transform: uppercase;
+    }
+
+    .detail-item table, .detail-item p, .bg-grey {
+      background-color: #f5f5f5;
+    }
+
+    .detail-item table th, .detail-item table td {
+      padding: 2px 10px 2px 10px;
+    }
+
+    .detail-link.active {
+      font-weight: bold;
+    }
+
+    .list-overflow {
+      max-height: 12rem;
+    }
+
+    .csl {
+      list-style: none;
+    }
+
+    .csl li {
+      display: inline;
+    }
+
+    .csl li::after {
+      content: ','
+    }
+
+    .csl li:last-child:after
+    {
+      content: '';
+    }
+
+    .csl {
+      padding: 0;
+      margin:0;
+    }
+
+    .dl-inline dt, .dl-inline dd {
+      float: left
+    }
+    .dl-inline dt {
+      clear: both;
+      padding-right: 0.5rem;
+    }
+  </style>
+  <div th:replace="_menu :: menu (${User})"></div>
+  <div class="container center">
+    <div class="row">
+      <div class="col">
+        <h1 th:text="${PageTitle}">Prescription Recommendations</h1>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <p>&nbsp;</p>
+    <div class="row">
+      <div class="col">
+        <div class="card">
+          <div class="card-body">
+              <dl class="dl-inline">
+              <dt>Patient</dt>
+              <dd><a th:href="${model.patient.getUrl()}" th:text="${model.patient.getFullName()}"></a></dd>
+              <dt>Candidate Drug</dt>
+              <dd>
+                <span th:text="${model.candidateDrug.getName()}"></span>
+                <span>&#91;<em th:text="${model.candidateDrug.getId()}"></em>&#93;</span>
+              </dd>
+              <dt>Current Drugs</dt>
+              <dd class="overflow-auto list-overflow">
+                <em th:if="${model.currentDrugs == null || model.currentDrugs.isEmpty()}">none</em>
+                <ul class="csl" th:if="${model.currentDrugs != null && !model.currentDrugs.isEmpty()}">
+                  <li th:each="currentDrug : ${model.currentDrugs}">
+                    <span th:text="${currentDrug.getName()}"></span>
+                    <span >&#91;<em th:text="${currentDrug.getId()}"></em>&#93;</span>
+                  </li>
+                </ul>
+              </dd>
+              <dt>Allergic Drugs</dt>
+              <dd class="overflow-auto list-overflow">
+                <em th:if="${model.allergicDrugs == null || model.allergicDrugs.isEmpty()}">none</em>
+                <ul class="csl" th:if="${model.allergicDrugs != null && !model.allergicDrugs.isEmpty()}">
+                  <li th:each="allergicdrug : ${model.allergicDrugs}">
+                    <span th:text="${allergicdrug.getName()}"></span>
+                    <span >&#91;<em th:text="${allergicdrug.getId()}"></em>&#93;</span></li>
+                </ul>
+              </dd>
+              <dt>Drug Similarity</dt>
+              <dd>
+                <p>&nbsp;</p>
+                <form method="GET" action="" class="form-inline">
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text mb-2">Candidate Drug</span>
+                    </div>
+                    <input type="text" placeholder="Candidate Drug" name="candidateDst" title="Candidate Drug"
+                          class="form-control mb-2 mr-sm-2" th:value="${model.candidateDrugSimilarityThreshold}" id="candidateDst"/>
+                  </div>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text mb-2">Current Drugs</span>
+                    </div>
+                    <input type="text" placeholder="Current Drug" name="currentDst" title="Current Drug"
+                        class="form-control mb-2 mr-sm-2" th:value="${model.currentDrugSimilarityThreshold}" id="currentDst"/>
+                  </div>
+                  <button type="submit" class="btn btn-primary mb-2"><i class="fa fa-sync"></i></button>
+                </form>
+              </dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p>&nbsp;</p>
+    <div class="row">
+      <div class="col">
+        <table class="table table-bordered">
+          <thead>
+            <th class="text-center">Drug Bank ID</th>
+            <th class="text-center">Drug Name</th>
+            <th class="text-center">Is Allergic</th>
+            <th class="text-center">Current Drug Interactivity</th>
+            <th class="text-center">Candidate Drug Similarity</th>
+            <th class="text-center">Average Current Drugs Similarity</th>
+            <th></th>
+          </thead>
+          <tbody>
+            <tr><td colspan="7" class="bg-grey">Candidate Drug</td></tr>
+            <tr>
+              <td class="text-center align-middle" th:text="${model.candidateRecommendation.getDrugBankId()}"></td>
+              <td class="text-center align-middle" th:text="${model.candidateRecommendation.getDrugName()}"></td>
+              <td class="text-center align-middle">
+                <a href="javascript: void(0);" th:text="${model.candidateRecommendation.getIsAllergic()}" title="toggle allergic drugs" class="detail-link"
+                   th:if="${model.candidateRecommendation.allergicDrugs != null && !model.candidateRecommendation.allergicDrugs.isEmpty()}"
+                   th:attr="data-detailid='c-allergic-'+${model.candidateRecommendation.getDrugBankId()}" onclick="toggleDetail(this);"></a>
+                <span th:unless="${model.candidateRecommendation.allergicDrugs != null && !model.candidateRecommendation.allergicDrugs.isEmpty()}"  th:text="${model.candidateRecommendation.getIsAllergic()}"></span>
+              </td>
+              <td class="text-center align-middle">
+                <a href="javascript: void(0);" th:text="${model.candidateRecommendation.getWorstInteraction()}" title="toggle interactive drugs" class="detail-link"
+                   th:if="${model.candidateRecommendation.interactiveDrugs != null && !model.candidateRecommendation.interactiveDrugs.isEmpty()}"
+                   th:attr="data-detailid='c-interactive-'+${model.candidateRecommendation.getDrugBankId()}" onclick="toggleDetail(this);"></a>
+                <span th:unless="${model.candidateRecommendation.interactiveDrugs != null && !model.candidateRecommendation.interactiveDrugs.isEmpty()}" th:text="${model.candidateRecommendation.getWorstInteraction()}"></span>
+              </td>
+              <td class="text-center align-middle" th:text="${#numbers.formatDecimal(model.candidateRecommendation.similarity * 100, 1, 'COMMA', 2, 'POINT')}+'%'"></td>
+              <td class="text-center align-middle" >
+                <a href="javascript: void(0);" title="toggle current drug similarities" class="detail-link"
+                  th:text="${#numbers.formatDecimal(model.candidateRecommendation.getAverageCurrentSimilarity() * 100, 1, 'COMMA', 2, 'POINT')}+'%'"
+                  th:if="${model.candidateRecommendation.currentDrugSimilarity != null && !model.candidateRecommendation.currentDrugSimilarity.isEmpty()}"
+                  th:attr="data-detailid='c-current-'+${model.candidateRecommendation.getDrugBankId()}" onclick="toggleDetail(this);"></a>
+                <span th:unless="${model.candidateRecommendation.currentDrugSimilarity != null && !model.candidateRecommendation.currentDrugSimilarity.isEmpty()}"
+                  th:text="${#numbers.formatDecimal(model.candidateRecommendation.getAverageCurrentSimilarity() * 100, 1, 'COMMA', 2, 'POINT')}+'%'"></span>
+              </td>
+              <td class="text-center align-middle">
+                <a class="btn btn-outline-primary" th:title="'Prescribe ' + ${model.candidateRecommendation.getDrugName()}"
+                   th:href="@{'/patient/' + ${model.patient.Id} + '/DispenseDrug/' + ${model.candidateRecommendation.getDrugBankId()}}">
+                   Prescribe
+                  </a>
+              </td>
+            </tr>
+            <tr style="display:none;" class="detail-item" th:id="'c-allergic-'+${model.candidateRecommendation.getDrugBankId()}"
+                th:if="${model.candidateRecommendation.allergicDrugs != null && !model.candidateRecommendation.allergicDrugs.isEmpty()}">
+              <td colspan="7">
+                <p class="text-center text-success">Allergic Drugs</p>
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Drug Bank ID</th>
+                      <th>Name</th>
+                      <th>Class</th>
+                      <th>Similarity</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr th:each="allericDrug : ${model.candidateRecommendation.allergicDrugs}">
+                      <td th:text="${allericDrug.getFirst().id}"></td>
+                      <td th:text="${allericDrug.getFirst().getName()}"></td>
+                      <td th:text="${allericDrug.getFirst().getDrugClass()}"></td>
+                      <td th:text="${#numbers.formatDecimal(allericDrug.getSecond() * 100, 1, 'COMMA', 2, 'POINT')}+'%'"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+            <tr style="display:none;" class="detail-item" th:id="'c-interactive-'+${model.candidateRecommendation.getDrugBankId()}"
+                th:if="${model.candidateRecommendation.interactiveDrugs != null && !model.candidateRecommendation.interactiveDrugs.isEmpty()}">
+              <td colspan="7">
+                  <p class="text-center text-success">Interactive Drugs</p>
+              <table class="table">
+                <thead>
+                <tr>
+                  <th>Drug Bank ID</th>
+                  <th>Name</th>
+                  <th>Class</th>
+                  <th>Interaction</th>
+                  <th>Similarity</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="interactiveDrug : ${model.candidateRecommendation.interactiveDrugs}">
+                  <td th:text="${interactiveDrug.getFirst().id}"></td>
+                  <td th:text="${interactiveDrug.getFirst().getName()}"></td>
+                  <td th:text="${interactiveDrug.getFirst().getDrugClass()}"></td>
+                  <td th:text="${interactiveDrug.getSecond()}"></td>
+                  <td th:text="${#numbers.formatDecimal(interactiveDrug.getThird() * 100, 1, 'COMMA', 2, 'POINT')}+'%'"></td>
+                </tr>
+                </tbody>
+              </table>
+              </td>
+            </tr>
+            <tr style="display:none;" class="detail-item" th:id="'c-current-'+${model.candidateRecommendation.getDrugBankId()}"
+              th:if="${model.candidateRecommendation.currentDrugSimilarity != null && !model.candidateRecommendation.currentDrugSimilarity.isEmpty()}">
+              <td colspan="7">
+                <p class="text-center text-success">Current Drug Similarities</p>
+                <table class="table">
+                  <thead>
+                    <tr>
+                    <th>Drug Bank ID</th>
+                    <th>Name</th>
+                    <th>Class</th>
+                    <th>Similarity</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr th:each="currentDrug : ${model.candidateRecommendation.currentDrugSimilarity}">
+                      <td th:text="${currentDrug.getFirst().id}"></td>
+                      <td th:text="${currentDrug.getFirst().getName()}"></td>
+                      <td th:text="${currentDrug.getFirst().getDrugClass()}"></td>
+                      <td th:text="${#numbers.formatDecimal(currentDrug.getSecond() * 100, 1, 'COMMA', 2, 'POINT')}+'%'"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+
+            <tr th:if="${model.drugRecommendations.size() > 0}">
+              <td colspan="7" class="bg-grey">Sorted Recommendations</td>
+            </tr>
+            <th:block th:each="recommendation : ${model.drugRecommendations}">
+              <tr>
+                <td class="text-center align-middle" th:text="${recommendation.getDrugBankId()}"></td>
+                <td class="text-center align-middle" th:text="${recommendation.getDrugName()}"></td>
+                <td class="text-center align-middle">
+                  <a href="javascript: void(0);" th:text="${recommendation.getIsAllergic()}" title="toggle allergic drugs" class="detail-link"
+                     th:if="${recommendation.allergicDrugs != null && !recommendation.allergicDrugs.isEmpty()}"
+                     th:attr="data-detailid='allergic-'+${recommendation.getDrugBankId()}" onclick="toggleDetail(this);"></a>
+                  <span th:unless="${recommendation.allergicDrugs != null && !recommendation.allergicDrugs.isEmpty()}"  th:text="${recommendation.getIsAllergic()}"></span>
+                </td>
+                <td class="text-center align-middle">
+                  <a href="javascript: void(0);" th:text="${recommendation.getWorstInteraction()}" title="toggle interactive drugs" class="detail-link"
+                     th:if="${recommendation.interactiveDrugs != null && !recommendation.interactiveDrugs.isEmpty()}"
+                     th:attr="data-detailid='interactive-'+${recommendation.getDrugBankId()}" onclick="toggleDetail(this);"></a>
+                  <span th:unless="${recommendation.interactiveDrugs != null && !recommendation.interactiveDrugs.isEmpty()}" th:text="${recommendation.getWorstInteraction()}"></span>
+                </td>
+                <td class="text-center align-middle" th:text="${#numbers.formatDecimal(recommendation.similarity * 100, 1, 'COMMA', 2, 'POINT')}+'%'"></td>
+                <td class="text-center align-middle" >
+                  <a href="javascript: void(0);" title="toggle current drug similarities" class="detail-link"
+                    th:text="${#numbers.formatDecimal(recommendation.getAverageCurrentSimilarity() * 100, 1, 'COMMA', 2, 'POINT')}+'%'"
+                    th:if="${recommendation.currentDrugSimilarity != null && !recommendation.currentDrugSimilarity.isEmpty()}"
+                    th:attr="data-detailid='current-'+${recommendation.getDrugBankId()}" onclick="toggleDetail(this);"></a>
+                  <span th:unless="${recommendation.currentDrugSimilarity != null && !recommendation.currentDrugSimilarity.isEmpty()}"
+                    th:text="${#numbers.formatDecimal(recommendation.getAverageCurrentSimilarity() * 100, 1, 'COMMA', 2, 'POINT')}+'%'"></span>
+                </td>
+                <td class="text-center align-middle">
+                    <a class="btn btn-outline-primary" th:title="'Prescribe ' + ${recommendation.getDrugBankId()}"
+                       th:href="@{'/patient/' + ${model.patient.Id} + '/DispenseDrug/' + ${recommendation.getDrugBankId()}}">Prescribe</a>
+                  </td>
+              </tr>
+              <tr style="display:none;" class="detail-item" th:id="'allergic-'+${recommendation.getDrugBankId()}"
+                  th:if="${recommendation.allergicDrugs != null && !recommendation.allergicDrugs.isEmpty()}">
+                <td colspan="7">
+                  <p class="text-center text-success">Allergic Drugs</p>
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th>Drug Bank ID</th>
+                        <th>Name</th>
+                        <th>Class</th>
+                        <th>Similarity</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr th:each="allericDrug : ${recommendation.allergicDrugs}">
+                        <td th:text="${allericDrug.getFirst().id}"></td>
+                        <td th:text="${allericDrug.getFirst().getName()}"></td>
+                        <td th:text="${allericDrug.getFirst().getDrugClass()}"></td>
+                        <td th:text="${#numbers.formatDecimal(allericDrug.getSecond() * 100, 1, 'COMMA', 2, 'POINT')}+'%'"></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+              <tr style="display:none;" class="detail-item" th:id="'interactive-'+${recommendation.getDrugBankId()}"
+                  th:if="${recommendation.interactiveDrugs != null && !recommendation.interactiveDrugs.isEmpty()}">
+                <td colspan="7">
+                    <p class="text-center text-success">Interactive Drugs</p>
+                <table class="table">
+                  <thead>
+                  <tr>
+                    <th>Drug Bank ID</th>
+                    <th>Name</th>
+                    <th>Class</th>
+                    <th>Interaction</th>
+                    <th>Similarity</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr th:each="interactiveDrug : ${recommendation.interactiveDrugs}">
+                    <td th:text="${interactiveDrug.getFirst().id}"></td>
+                    <td th:text="${interactiveDrug.getFirst().getName()}"></td>
+                    <td th:text="${interactiveDrug.getFirst().getDrugClass()}"></td>
+                    <td th:text="${interactiveDrug.getSecond()}"></td>
+                    <td th:text="${#numbers.formatDecimal(interactiveDrug.getThird() * 100, 1, 'COMMA', 2, 'POINT')}+'%'"></td>
+                  </tr>
+                  </tbody>
+                </table>
+                </td>
+              </tr>
+              <tr style="display:none;" class="detail-item" th:id="'current-'+${recommendation.getDrugBankId()}"
+                th:if="${recommendation.currentDrugSimilarity != null && !recommendation.currentDrugSimilarity.isEmpty()}">
+                <td colspan="7">
+                  <p class="text-center text-success">Current Drug Similarities</p>
+                  <table class="table">
+                    <thead>
+                      <tr>
+                      <th>Drug Bank ID</th>
+                      <th>Name</th>
+                      <th>Class</th>
+                      <th>Similarity</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr th:each="currentDrug : ${recommendation.currentDrugSimilarity}">
+                        <td th:text="${currentDrug.getFirst().id}"></td>
+                        <td th:text="${currentDrug.getFirst().getName()}"></td>
+                        <td th:text="${currentDrug.getFirst().getDrugClass()}"></td>
+                        <td th:text="${#numbers.formatDecimal(currentDrug.getSecond() * 100, 1, 'COMMA', 2, 'POINT')}+'%'"></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+            </th:block>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript">
+
+  var selectedElem = null;
+
+  var hide = function(e) {
+    document
+        .getElementById(e.getAttribute("data-detailid"))
+        .setAttribute("style", "display:none;");
+    e.className = e.className
+      .split(" ")
+      .filter(function(s) { return s != "active"; })
+      .reduce(
+        function(total, currentValue, currentIndex, arr) {
+          return total + " " + currentValue;
+        },
+        "");
+  };
+
+  var show = function(e) {
+    document
+      .getElementById(e.getAttribute("data-detailid"))
+      .setAttribute("style", "");
+    e.className += " active";
+  };
+
+  var toggleDetail = function(elem) {
+    if (elem == selectedElem || elem != selectedElem && selectedElem) {
+      hide(selectedElem);
+    }
+    if (elem == selectedElem) {
+      selectedElem = null;
+    }
+    else {
+      show(elem);
+      selectedElem = elem;
+    }
+  };
+  </script>
+</body>
+</html>

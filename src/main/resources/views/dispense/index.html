@@ -1,0 +1,116 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en">
+  <head th:replace="_header :: header"></head>
+  <body>
+    <div th:replace="_menu :: menu (${User})"></div>
+    <div class="container center">
+      <div class="row">
+        <div class="col">
+            <h1 th:text="${PageTitle}">Dispense Prescription</h1>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="col m-1">
+          <b>Patient Name: </b><span th:text="${PatientName}"></span><br/>
+          <b>Drug being prescribed: </b><span th:text="${DrugID} + ' ' + ${DrugName}"></span><br/>
+        </div>
+      </div>
+      <span th:if="${Complete} == 'false'">
+        <div  class="row">
+          <div class="col">
+            <form method="POST" th:action="@{'/patient/' + ${PatientID} + '/DispenseComplete/' + ${DrugID}}" th:object="${Prescription}">
+              <table class="table table-striped table-bordered">
+                  <thead>
+                      <tr>
+                          <th class="text-center" colspan="2">Medicine</th>
+                          <th class="text-center" colspan="2">Dosage</th>
+                          <th class="text-center" rowspan="2">Frequency of Dosage</th>
+                          <th class="text-center" rowspan="2">Duration</th>
+                          <th class="text-center" rowspan="2">Qualifier</th>
+                          <th class="text-center" rowspan="2">Units per Dosage</th>
+                      </tr>
+                      <tr>
+                          <th class="text-center">Total Quantity</th>
+                          <th class="text-center">Unit</th>
+                          <th class="text-center">Amount</th>
+                          <th class="text-center">Unit</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <tr>
+                          <td><input type="text" class="form-control" required maxlength="4" pattern="[0-9]+" title="Numeric only" th:placeholder="${Prescription.medQty}" th:field="*{medQty}"></td>
+                          <td><input type="text" class="form-control" required maxlength="10" pattern="[A-Za-z]+" title="Alphabetical only" th:placeholder="${Prescription.medUnit}" th:field="*{medUnit}"></td>
+                          <td><input type="text" class="form-control" required maxlength="5" pattern="[0-9]+" title="Numeric only" th:placeholder="${Prescription.dosage}" th:field="*{dosage}"></td>
+                          <td><input type="text" class="form-control" required maxlength="5" pattern="[A-Za-z]+" title="Alphabetical only" th:placeholder="${Prescription.dosageUnit}" th:field="*{dosageUnit}"></td>
+                          <td><input type="text" class="form-control" required maxlength="20" pattern="[A-Za-z0-9\s]+" title="Alphanumeric only" th:placeholder="${Prescription.medFreq}" th:field="*{medFreq}"></td>
+                          <td><input type="text" class="form-control" maxlength="20" pattern="[A-Za-z0-9\s]+" title="Alphanumeric only" th:placeholder="${Prescription.duration}" th:field="*{duration}"></td>
+                          <td><input type="text" class="form-control" maxlength="20" pattern="[A-Za-z0-9\s]+" title="Alphanumeric only" th:placeholder="${Prescription.medQualifier}" th:field="*{medQualifier}"></td>
+                          <td><input type="text" class="form-control" maxlength="10" pattern="[A-Za-z0-9\s]+" title="Alphanumeric only" th:placeholder="${Prescription.unitPerDosage}" th:field="*{unitPerDosage}"></td>
+                      </tr>
+                  </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="row">
+              <div class="col m-1">
+                <a th:href="'/patient/' + ${PatientID}" class="btn btn-outline-primary" role="button" title="Return to patient detail">Back to Patient</a>
+              </div>
+              <div class="col m-1 text-right">
+                <input type="submit" class="btn btn-primary" title="Submit the details to dispense this prescription" value="Submit"/>
+              </div>
+            </form>
+          </div>
+      </span>
+      <span th:if="${Complete} == 'true'">
+        <div class="row">
+          <div class="col">
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th class="text-center" rowspan="2">Prescription ID</th>
+                        <th class="text-center" rowspan="2">Time & Date</th>
+                        <th class="text-center" rowspan="2">Practitioner</th>
+                        <th class="text-center" colspan="2">Medicine</th>
+                        <th class="text-center" colspan="2">Dosage</th>
+                        <th class="text-center" rowspan="2">Frequency of Dosage</th>
+                        <th class="text-center" rowspan="2">Duration</th>
+                        <th class="text-center" rowspan="2">Qualifier</th>
+                        <th class="text-center" rowspan="2">Units per Dosage</th>
+                    </tr>
+                    <tr>
+                        <th class="text-center">Total Quantity</th>
+                        <th class="text-center">Unit</th>
+                        <th class="text-center">Amount</th>
+                        <th class="text-center">Unit</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="text-center align-middle" th:text="${Prescription.Id}"></td>
+                        <td class="text-center align-middle" th:text="${Prescription.dateTime}"></td>
+                        <td class="text-center align-middle" th:text="${Prescription.user}"></td>
+                        <td class="text-center align-middle" th:text="${Prescription.medQty}"></td>
+                        <td class="text-center align-middle" th:text="${Prescription.medUnit}"></td>
+                        <td class="text-center align-middle" th:text="${Prescription.dosage}"></td>
+                        <td class="text-center align-middle" th:text="${Prescription.dosageUnit}"></td>
+                        <td class="text-center align-middle" th:text="${Prescription.medFreq}"></td>
+                        <td class="text-center align-middle" th:text="${Prescription.duration}"></td>
+                        <td class="text-center align-middle" th:text="${Prescription.medQualifier}"></td>
+                        <td class="text-center align-middle" th:text="${Prescription.unitPerDosage}"></td>
+                    </tr>
+                </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col m-1">
+            <h3>The prescription is complete!</h3>
+            <a th:href="'/patient/' + ${PatientID}" class="btn btn-outline-primary" role="button" title="Return to patient detail">Back to Patient</a>
+          </div>
+        </div> 
+    </span>
+    </div>
+  </body>
+</html>

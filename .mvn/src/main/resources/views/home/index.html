@@ -1,0 +1,21 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="_header :: header"></head>
+<body>
+    <div th:replace="_menu :: menu (${User})"></div>
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-6 offset-md-3">
+                <img src="/assets/images/PPRS_Logo.svg" width="100%" />
+                <p>&nbsp;</p>
+            </div>
+        </div>
+        <div class="row align-items-end">
+            <div class="col-md-12">
+                <h1 class="text-center text-uppercase">Personalised Prescription Recommendation Service</h1>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en">
+  <head th:replace="_header :: header"></head>
+  <body>
+    <div th:replace="_menu :: menu (${User})"></div>
+    <div class="container center">
+      <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <h1 th:text="${PageTitle}">Patient Drug Profile</h1>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="col m-2">
+            <b>Patient Name: </b><span th:text="${PatientName}"></span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col border border-primary rounded m-2">
+          <h3>Allergic Drugs:</h3>
+          <form method="POST" th:action="@{'/patient/' + ${PatientID} + '/removeAllergicDrug'}">
+            <div th:each="allergicdrug : ${AllergicDrugs}">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="drugid" th:value="${allergicdrug.id}" th:id="${allergicdrug.name}">
+                <label class="form-check-label" th:for="${allergicdrug.name}">
+                  <p th:text="${allergicdrug.id + ' ' + allergicdrug.name}"></p>
+                </label>
+              </div>
+            </div>
+            <span th:if="${!AllergicDrugs.isEmpty()}">
+              <p>
+                <button type="submit" class="btn btn-outline-primary" title="Remove the selected allergic drug(s)">Remove Drug(s)</button>
+              </p>
+            </span>
+          </form>
+          <p>
+            <a th:href="@{'/patient/' + ${PatientID} + '/searchAllergicDrug'}" class="btn btn-outline-primary" role="button" title="Add a drug to the patient's allergic drugs">Add Drug</a>
+          </p>
+        </div>
+        <div class="col border border-primary rounded m-2">
+          <h3>Current Drugs:</h3>
+            <form method="POST" th:action="@{'/patient/' + ${PatientID} + '/removeCurrentDrug'}">
+              <div th:each="currentdrug : ${CurrentDrugs}">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="drugid" th:value="${currentdrug.id}" th:id="${currentdrug.name}">
+                  <label class="form-check-label" th:for="${currentdrug.name}">
+                    <p th:text="${currentdrug.id + ' ' + currentdrug.name}"></p>
+                  </label>
+                </div>
+              </div>
+              <span th:if="${!CurrentDrugs.isEmpty()}">
+                <p>
+                  <button type="submit" class="btn btn-outline-primary" title="Remove the selected current drug(s)">Remove Drug(s)</button>
+                </p>
+              </span>
+            </form>
+          <p>
+            <a th:href="@{'/patient/' + ${PatientID} + '/searchCurrentDrug'}" class="btn btn-outline-primary" role="button" title="Add a drug to the patient's current drugs">Add Drug</a>
+          </p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col m-2 mb-3">
+          <a th:href="'/patient/' + ${PatientID}" class="btn btn-outline-primary" role="button" title="Return to patient detail">Back to Patient</a>
+        </div>
+        <div class="col m-2 mb-3 text-right">
+          <a th:href="@{'/patient/' + ${PatientID} + '/searchPrescribingDrug'}" class="btn btn-primary" role="button" title="Prescribe and analyse a new drug">Prescribe Drug</a>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

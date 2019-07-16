@@ -1,0 +1,61 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="_header :: header"></head>
+<body>
+    <div th:replace="_menu :: menu (${User})"></div>
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-6 offset-md-3">
+                <p>&nbsp;</p>
+            </div>
+        </div>
+        
+        <div class="row align-items-end">
+            <div class="col-md-12">
+                <h1 class="text-center text-uppercase">Report Selection</h1>
+                <p>&nbsp;</p>
+                <p>Please select the report you would like to view below: </p>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Report Type</th>
+                        </tr>
+                    </thead>  
+                    <tbody>
+                        
+                         <tr>
+                             <td>
+                                <form action="/report/patient" method="GET" class="form-inline justify-content-left" >
+                                    <div class="input-group">
+                                        <label for="patientName">Patient Report &nbsp; &nbsp;</label>
+                                        <input type="text" class="form-control" placeholder="Patient Name" name="patientName" style="width:200px;">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-outline-primary" type="submit"><i class="fa fa-search"></i></button>
+                                        </div>
+                                    </div>
+                                </form>
+                             </td>
+                        </tr>  
+                         <tr>
+                            <td>
+                                <form action="/report/daily" method="GET" target="_blank" class="form-inline justify-content-left" >
+                                    <div class="input-group">
+                                        <label for="patientName">Daily Report &nbsp; &nbsp; &nbsp;</label>
+                                        <input type="date" class="form-control" name="reportDate" style="width:200px;">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-outline-primary" type="submit"><i class="fa fa-search"></i></button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </td>
+                         </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
+        
+    </div>

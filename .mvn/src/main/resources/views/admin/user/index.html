@@ -1,0 +1,44 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head th:replace="_header :: header"></head>
+
+<body>
+    <div th:replace="_menu :: menu (${User})"></div>
+    <div class="container">
+        <p><a href="/admin/user/register">Register User</a></p>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Full Name</th>
+                    <th>User Name</th>
+                    <th>Roles</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <th:block th:each="user : ${users}">
+                    <tr>
+                        <td>
+                            <a th:text="${user.fullname}"></a>
+                        </td>
+                        <td th:text="${user.username}"></td>
+                        <td>
+                            <th:block th:each="role : ${user.Roles}">
+                                <span th:text="${role}" class="badge badge-info"></span>
+                            </th:block>
+                        </td>
+                        <td class="text-right">
+                            <a th:href="'/admin/user/delete/' + ${user.id}" th:if="${user.id != User.id}">
+                                <i class="fa fa-times text-danger" title="delete"></i>
+                            </a>
+                        </td>
+                    </tr>
+                </th:block>
+
+            </tbody>
+        </table>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en">
+  <head th:replace="_header :: header"></head>
+  <body>
+    <div th:replace="_menu :: menu (${User})"></div>
+    <div class="container center">
+      <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <h1 th:text="${DrugList + ' Drug Search'}">Drug Search</h1>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="col">
+          <b>Patient Name: </b><span th:text="${PatientName}"></span>
+        </div>
+      </div>
+      <form method="POST" th:action="@{'/patient/' + ${PatientID} + '/search' + ${DrugList} + 'Drug'}" th:object="${DrugModel}">
+        <div class="row">
+          <div class="col-4">
+            <div class="form-group">
+              <label class="control-label" for="id">Drug Bank ID: </label>
+              <input class="form-control" type="text" maxlength="10" pattern="[0-9a-zA-Z\s]*" title="Alphanumeric only" th:placeholder="${DrugModel.id}" th:field="*{id}"/>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="form-group">
+              <label class="control-label" for="id">Drug Name: </label>
+              <input class="form-control" type="text" maxlength="30" pattern="[0-9a-zA-Z\s]*" title="Alphanumeric only" th:placeholder="${DrugModel.name}" th:field="*{name}"/>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="form-group">
+              <label class="control-label" for="id">Drug Class: </label>
+              <input class="form-control" type="text" maxlength="30" pattern="[0-9a-zA-Z\s]*" title="Alphanumeric only" th:placeholder="${DrugModel.drugclass}" th:field="*{drugclass}"/>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col m-1">
+            <a th:href="'/patient/' + ${PatientID}" class="btn btn-outline-primary" role="button" title="Return to patient detail">Back to Patient</a>
+          </div>
+          <div class="col m-1 text-right">
+            <input type="submit" class="btn btn-primary" value="Search"/>
+          </div>
+        </div>
+      </form>
+      <span th:if="${FoundDrugs != null}">
+        <div class="row">
+          <div class="col m-1 mb-3">
+            <h3>Search Results</h3>
+            <table class="table table-striped table-bordered">
+              <thead>
+                <th>Drug Bank ID</th>
+                <th>Drug Name</th>
+                <th>Drug Class</th>
+                <th></th>
+              </thead>
+              <tbody>
+                <div th:each="founddrug : ${FoundDrugs}">
+                  <tr>
+                    <td th:text="${founddrug.id}"></td>
+                    <td th:text="${founddrug.name}"></td>
+                    <td th:text="${founddrug.drugclass}"></td>
+                    <td><a th:href="@{'/patient/' + ${PatientID} + '/add' + ${DrugList} + 'Drug/' + ${founddrug.id}}" class="btn btn-outline-primary" role="button">Select</a></td>
+                  </tr>
+                </div>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </span>
+    </div>
+  </body>
+</html>

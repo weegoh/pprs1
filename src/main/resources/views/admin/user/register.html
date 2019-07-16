@@ -1,0 +1,56 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head th:replace="_header :: header"></head>
+
+<body>
+    <div th:replace="_menu :: menu (${User})"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Register User</h4>
+                        <form method="POST" action="/admin/user/register">
+                            <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+                            <p class="card-text">
+                                <dl class="dl-horizontal" th:object="${form}">
+                                    <dt>Full Name</dt>
+                                    <dd>
+                                        <input type="text" class="form-control" th:field="*{fullname}" />
+                                        <p th:if="${#fields.hasErrors('fullname')}" th:errors="*{fullname}" class="text-danger"></p>
+                                        <p th:if="${duplicated == 'fullname'}" class="text-danger">Name must be unique</p>
+                                    </dd>
+                                    <dt>User Name</dt>
+                                    <dd>
+                                        <input type="text" class="form-control" th:field="*{user_name}" />
+                                        <p th:if="${#fields.hasErrors('user_name')}" th:errors="*{user_name}" class="text-danger"></p>
+                                        <p th:if="${duplicated == 'username'}" class="text-danger">Username must be unique</p>
+                                    </dd>
+                                    <dt>Password</dt>
+                                    <dd>
+                                        <input type="password" class="form-control" th:field="*{password}" />
+                                        <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="text-danger"></p>
+                                    </dd>
+                                    <dt>Roles</dt>
+                                    <p>(Hold CTRL to select multiple options)</p>
+                                    <dd>
+                                        <select required class="form-control" th:field="*{roles}" multiple>
+                                            <option
+                                                th:each="selectrole : ${selectroles}"
+                                                th:value="${selectrole.name}"
+                                                th:text="${{selectrole.description}}"></option>
+                                        </select>
+                                    </dd>
+                                </dl>
+                                <button type="submit" class="btn btn-outline-primary">Submit</button>
+                            </p>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

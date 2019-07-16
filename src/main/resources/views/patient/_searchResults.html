@@ -1,0 +1,41 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<body>
+    <div th:replace="_menu :: menu (${User})"></div>
+    <div class="container center">
+        <div class="row">
+            <div class="col">
+                <h1 th:text="${PageTitle}">Patient</h1>
+            </div>
+        </div>
+    </div>
+    <div th:fragment="searchResults (patientName, patients)">
+        <h4>Results for <em th:text="${patientName}"></em></h4>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Date of Birth</th>
+                    <th>Suburb</th>
+                </tr>
+            </thead>
+            <tbody>
+                <th:block th:each="patient : ${patients}">
+                    <tr>
+                        <td>
+                            <a
+                                th:text="${patient.LastName} + ', ' + ${patient.FirstName}"
+                                th:href="'/patient/' + ${patient.Id}"></a>
+                        </td>
+                        <td th:text="${patient.DateOfBirth}"></td>
+                        <td th:text="${patient.Suburb}"></td>
+                    </tr>
+                </th:block>
+
+            </tbody>
+        </table>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head th:replace="_header :: header"></head>
+
+<body>
+    <div th:replace="_menu :: menu (${User})"></div>
+    <div class="container center">
+        <div class="row">
+            <div class="col">
+                <h1 th:text="${PageTitle}">Patient</h1>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <ul class="list-unstyled list-inline">
+                    <li class="list-inline-item"><a href="/patient/new">New Patient</a></li>
+                </ul>
+                <form action="/patient" method="GET">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Patient Name" th:value="${patientName}"
+                            name="patientName">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-primary" type="submit"><i class="fa fa-search"></i></button>
+                        </div>
+                    </div>
+                </form>
+                <p>&nbsp;</p>
+                <div th:if="${patients} != null and ${#lists.isEmpty(patients)} and ${patientName} != null and ${patientName} != ''"
+                    class="alert alert-danger">
+                    No results for <span th:text="${patientName}"></span>
+                </div>
+                <div th:if="${patients} != null and ${not #lists.isEmpty(patients)}">
+                    <div th:replace="patient/_searchResults :: searchResults (${patientName}, ${patients})"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
